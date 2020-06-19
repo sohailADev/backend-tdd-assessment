@@ -7,7 +7,7 @@ Students are expected to edit this module, to add more tests to run
 against the 'echo.py' program.
 """
 
-__author__ = "???"
+__author__ = "sohailadev"
 
 import sys
 import importlib
@@ -25,6 +25,7 @@ PKG_NAME = 'echo'
 # Students can use this class object in their code
 class Capturing(list):
     """Context Mgr helper for capturing stdout from a function call"""
+
     def __enter__(self):
         self._stdout = sys.stdout
         sys.stdout = self._stringio = StringIO()
@@ -47,7 +48,7 @@ def run_capture(pyfile, args=()):
     p = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
+    )
     stdout, stderr = p.communicate()
     stdout = stdout.decode().splitlines()
     stderr = stderr.decode().splitlines()
@@ -69,8 +70,8 @@ class TestEcho(unittest.TestCase):
         cls.funcs = {
             k: v for k, v in inspect.getmembers(
                 cls.module, inspect.isfunction
-                )
-            }
+            )
+        }
         # check the module for required functions
         assert "main" in cls.funcs, "Missing required function main()"
         assert "create_parser" in cls.funcs, "Missing required function create_parser()"
@@ -104,7 +105,7 @@ class TestEcho(unittest.TestCase):
         self.assertEqual(
             stdout[0], args[0],
             "The program is not performing simple echo"
-            )
+        )
 
     def test_lower_short(self):
         """Check if short option '-l' performs lowercasing"""
@@ -117,6 +118,28 @@ class TestEcho(unittest.TestCase):
     #
     # Students: add more cmd line options tests here.
     #
+
+    def test_help(self):
+        """Running the program without arguments should show usage."""
+
+        # Run the command `python ./echo.py -h` in a separate process, then
+        # collect its output.
+        process = subprocess.Popen(
+            ["python", "./echo.py", "-h"],
+            stdout=subprocess.PIPE)
+        stdout, _ = process.communicate()
+        stdout = stdout.decode().replace('\r', '')
+        with open("USAGE") as f:
+            usage = f.read()
+        self.assertEqual(stdout, usage)
+
+    def test_upper_short(self):
+        """Check if short option '-u' performs uppercasing"""
+        args = ["-u", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "HELLO WORLD")
 
 
 if __name__ == '__main__':

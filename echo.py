@@ -44,7 +44,6 @@ def main(args):
         parser.print_usage()
         sys.exit()
     message = ns.text
-    print(ns)
     if ns.upper:
         message = message.upper()
 

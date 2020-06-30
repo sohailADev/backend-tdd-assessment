@@ -117,7 +117,23 @@ class TestEcho(unittest.TestCase):
 
     #
     # Students: add more cmd line options tests here.
-    #
+    # -ult
+
+    def test_title_case(self):
+        """Check if short option '-t' performs title casing"""
+        args = ["-t", "HELLO WORLD"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
+
+    def test_with_ult(self):
+        """Check if short option '-ult' performs all cases"""
+        args = ["-ult", "HELLO WORLD"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
 
     def test_help(self):
         """Running the program without arguments should show usage."""
